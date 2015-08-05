@@ -16,11 +16,13 @@ module.exports = React.createClass
     minHeight: React.PropTypes.number
     maxHeight: React.PropTypes.number
     specials: React.PropTypes.array
+    onKeyDown: React.PropTypes.func
 
   getDefaultProps: ->
     minHeight: 120
     maxHeight: 200
     specials: ['@']
+    onKeyDown: ->
 
   getInitialState: ->
     contentHeight: 20
@@ -105,12 +107,19 @@ module.exports = React.createClass
   # events
 
   onChange: (event) ->
+    specialArea = @getSpecial()
+    triggerChar = @getTrigger()
+    caretArea = @getCaret()
+    # for a instant, special can be null with trigger defined
+    # return caret position as a temporary fix
+    if triggerChar? and (not specialArea?)
+      specialArea = caretArea
     @props.onChange
       value: event.target.value
       caret: @getCaret()
-      special: @getSpecial()
+      special: specialArea
       query: @getQuery()
-      trigger: @getTrigger()
+      trigger: triggerChar
     if event.target.value.length < 4
       # quickly shrink in height after removing content
       # TODO, need to exact height here
@@ -120,6 +129,9 @@ module.exports = React.createClass
 
   onKeyUp: (event) ->
     @onChange event
+
+  onKeyDown: (event) ->
+    @props.onKeyDown event
 
   onClick: (event) ->
     @onChange event
@@ -137,4 +149,4 @@ module.exports = React.createClass
       textarea
         ref: 'box', value: @props.text, onChange: @onChange
         onScroll: @onScroll, style: {height: @getHeight()}
-        onClick: @onClick, onKeyUp: @onKeyUp
+        onClick: @onClick, onKeyUp: @onKeyUp, onKeyDown: @onKeyDown
