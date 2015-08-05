@@ -1,5 +1,6 @@
 
 React = require 'react'
+dom = require './dom'
 
 div = React.createFactory 'div'
 pre = React.createFactory 'pre'
@@ -71,11 +72,20 @@ module.exports = React.createClass
     @props.onChange event.target.value
     @setState contentheight: @boxEl.clientHeight
 
+  onKeyUp: (event) ->
+    @onChange event
+
+  onClick: (event) ->
+    @onChange event
+
   onScroll: ->
     @preEl.scrollTop = @boxEl.scrollTop
 
   expandText: ->
-    @props.text
+    if @preEl?
+      dom.expand @props.text, @boxEl.selectionStart, @props.specials
+    else
+      dom.expand @props.text, 0, @props.specials
 
   render: ->
     div className: 'lite-textbox',
@@ -85,3 +95,4 @@ module.exports = React.createClass
       textarea
         ref: 'box', value: @props.text, onChange: @onChange
         onScroll: @onScroll, style: {height: @getHeight()}
+        onClick: @onClick, onKeyUp: @onKeyUp

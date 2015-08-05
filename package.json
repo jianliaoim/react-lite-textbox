@@ -5,7 +5,8 @@
   "main": "lib/index.js",
   "dependencies": {
     "classnames": "^1.2.0",
-    "react": "^0.13.1"
+    "react": "^0.13.1",
+    "tail-call": "0.0.1"
   },
   "devDependencies": {
     "cirru-script": "^0.2.3",
