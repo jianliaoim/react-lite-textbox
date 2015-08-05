@@ -18,10 +18,10 @@ gulp.task 'rsync', (cb) ->
   wrapper = require 'rsyncwrapper'
   wrapper.rsync
     ssh: true
-    src: ['index.html', 'build']
+    src: ['index.html', 'build', 'src']
     recursive: true
     args: ['--verbose']
-    dest: 'talk-ui:/teambition/server/talk-ui/react-lite-dropdown'
+    dest: 'talk-ui:/teambition/server/talk-ui/react-lite-textbox'
     deleteAll: true
   , (error, stdout, stderr, cmd) ->
     if error?

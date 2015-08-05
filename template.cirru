@@ -14,7 +14,7 @@ var
     stir.doctype
     html null
       head null
-        title null ":Coffee Webpack Starter"
+        title null ":Textbox"
         meta $ object (:charset :utf-8)
         link $ object (:rel :icon)
           :href :http://tp4.sinaimg.cn/5592259015/180/5725970590/1
@@ -25,15 +25,12 @@ var
       body null
         div
           object (:class :intro)
-          div
-            object (:class :title)
-            , ":This is a demo of Webpack usage."
-          line ":Open Console to see how it loads."
+          div ({} (:class :title))  ":This is a demo of Textbox."
           div null
             span null ":Read more at "
             a
-              object (:href :http://github.com/teambition/coffee-webpack-starter)
-              , :github.com/teambition/coffee-webpack-starter
+              object (:href :http://github.com/teambition/react-lite-textbox)
+              , :github.com/teambition/react-lite-textbox
             span null :.
         div
           object (:class :demo)

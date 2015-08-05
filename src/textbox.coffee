@@ -23,7 +23,7 @@ module.exports = React.createClass
     specials: ['@', ':']
 
   getInitialState: ->
-    contentheight: 20
+    contentHeight: 20
 
   componentDidMount: ->
     @boxEl = @refs.box.getDOMNode()
@@ -51,10 +51,10 @@ module.exports = React.createClass
 
   getHeight: ->
 
-    mirrorHeight = @state.contentheight
-    if @state.contentheight < @props.minHeight
+    mirrorHeight = @state.contentHeight
+    if @state.contentHeight < @props.minHeight
       mirrorHeight = @props.minHeight
-    if @state.contentheight > @props.maxHeight
+    if @state.contentHeight > @props.maxHeight
       mirrorHeight = @props.maxHeight
 
     mirrorHeight
@@ -77,12 +77,22 @@ module.exports = React.createClass
       dom.expand @props.text, 0, @props.specials
 
   getCaret: ->
-    @preEl.querySelector('.textbox-caret').getBoundingClientRect()
+    rect = @preEl.querySelector('.textbox-caret').getBoundingClientRect()
+
+    top: rect.top
+    bottom: rect.bottom
+    left: rect.left
+    right: rect.right
 
   getSpecial: ->
     target = @preEl.querySelector('.textbox-special')
     if target?
-      target.getBoundingClientRect()
+      rect = target.getBoundingClientRect()
+
+      top: rect.top
+      bottom: rect.bottom
+      left: rect.left
+      right: rect.right
     else
       null
 
@@ -97,7 +107,7 @@ module.exports = React.createClass
       caret: @getCaret()
       special: @getSpecial()
       query: @getQuery()
-    @setState contentheight: @boxEl.clientHeight
+    @setState contentHeight: @boxEl.scrollHeight
 
   onKeyUp: (event) ->
     @onChange event

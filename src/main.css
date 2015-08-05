@@ -1,2 +1,7 @@
 
 @import url(textbox.css);
+
+body {
+  padding: 100px;
+}
+

@@ -3,7 +3,7 @@
 
 getQuery = recur (buffer, text, specials) ->
   if text.length is 0
-    return undefined
+    return null
   else
     endChar = text[text.length-1]
     init = text[...-1]
