@@ -99,6 +99,9 @@ module.exports = React.createClass
   getQuery: ->
     pick.getQuery @boxEl.value[...@boxEl.selectionStart], @props.specials
 
+  getTrigger: ->
+    pick.getTrigger @boxEl.value[...@boxEl.selectionStart], @props.specials
+
   # events
 
   onChange: (event) ->
@@ -107,6 +110,7 @@ module.exports = React.createClass
       caret: @getCaret()
       special: @getSpecial()
       query: @getQuery()
+      trigger: @getTrigger()
     if event.target.value.length < 4
       # quickly shrink in height after removing content
       # TODO, need to exact height here
