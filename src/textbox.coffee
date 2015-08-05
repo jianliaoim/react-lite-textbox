@@ -1,6 +1,7 @@
 
 React = require 'react'
 dom = require './dom'
+pick = require './pick'
 
 div = React.createFactory 'div'
 pre = React.createFactory 'pre'
@@ -29,9 +30,10 @@ module.exports = React.createClass
     @preEl = @refs.pre.getDOMNode()
     @mirrorStyles()
 
-
   componentDidUpdate: ->
     @mirrorStyles()
+
+  # methods
 
   getBoxStyles: ->
     if @boxEl?
@@ -68,8 +70,33 @@ module.exports = React.createClass
       @preEl.style[key] = value
     @preEl.scrollTop = @boxEl.scrollTop
 
+  expandText: ->
+    if @preEl?
+      dom.expand @props.text, @boxEl.selectionStart, @props.specials
+    else
+      dom.expand @props.text, 0, @props.specials
+
+  getCaret: ->
+    @preEl.querySelector('.textbox-caret').getBoundingClientRect()
+
+  getSpecial: ->
+    target = @preEl.querySelector('.textbox-special')
+    if target?
+      target.getBoundingClientRect()
+    else
+      null
+
+  getQuery: ->
+    pick.getQuery @boxEl.value[...@boxEl.selectionStart], @props.specials
+
+  # events
+
   onChange: (event) ->
-    @props.onChange event.target.value
+    @props.onChange
+      value: event.target.value
+      caret: @getCaret()
+      special: @getSpecial()
+      query: @getQuery()
     @setState contentheight: @boxEl.clientHeight
 
   onKeyUp: (event) ->
@@ -81,11 +108,7 @@ module.exports = React.createClass
   onScroll: ->
     @preEl.scrollTop = @boxEl.scrollTop
 
-  expandText: ->
-    if @preEl?
-      dom.expand @props.text, @boxEl.selectionStart, @props.specials
-    else
-      dom.expand @props.text, 0, @props.specials
+  # renderers
 
   render: ->
     div className: 'lite-textbox',

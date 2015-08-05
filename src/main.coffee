@@ -12,8 +12,9 @@ pageComponent = React.createClass
   getInitialState: ->
     text: ''
 
-  onChange: (text) ->
-    @setState text: text
+  onChange: (info) ->
+    console.log info
+    @setState text: info.value
 
   render: ->
 
