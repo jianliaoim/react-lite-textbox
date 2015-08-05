@@ -1,8 +1,8 @@
 {
-  "name": "coffee-webpack-starter",
+  "name": "react-lite-textbox",
   "version": "0.0.1",
-  "description": "Component starter kit for Talk by Teambition",
-  "main": "lib/index.js",
+  "description": "Textbox component for Talk by Teambition",
+  "main": "lib/textbox.js",
   "dependencies": {
     "classnames": "^1.2.0",
     "react": "^0.13.1",
@@ -38,10 +38,10 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/teambition/coffee-webpack-starter.git"
+    "url": "https://github.com/teambition/coffee-lite-textbox.git"
   },
   "bugs": {
-    "url": "https://github.com/teambition/coffee-webpack-starter/issues"
+    "url": "https://github.com/teambition/coffee-lite-textbox/issues"
   },
-  "homepage": "https://github.com/teambition/coffee-webpack-starter"
+  "homepage": "https://github.com/teambition/coffee-lite-textbox"
 }

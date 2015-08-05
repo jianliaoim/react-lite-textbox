@@ -20,7 +20,8 @@ pageComponent = React.createClass
   render: ->
 
     div className: 'app-page',
-      Textbox text: @state.text, onChange: @onChange
+      Textbox
+        text: @state.text, onChange: @onChange, specials: ['@', ':']
       pre className: 'overview', (JSON.stringify @state.overview, null, 2)
 
 Page = React.createFactory pageComponent

@@ -20,7 +20,7 @@ module.exports = React.createClass
   getDefaultProps: ->
     minHeight: 120
     maxHeight: 200
-    specials: ['@', ':']
+    specials: ['@']
 
   getInitialState: ->
     contentHeight: 20
@@ -107,7 +107,12 @@ module.exports = React.createClass
       caret: @getCaret()
       special: @getSpecial()
       query: @getQuery()
-    @setState contentHeight: @boxEl.scrollHeight
+    if event.target.value.length < 4
+      # quickly shrink in height after removing content
+      # TODO, need to exact height here
+      @setState contentHeight: 0 # to trigger min-height
+    else
+      @setState contentHeight: @boxEl.scrollHeight
 
   onKeyUp: (event) ->
     @onChange event
