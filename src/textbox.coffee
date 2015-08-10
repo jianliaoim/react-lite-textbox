@@ -17,11 +17,15 @@ module.exports = React.createClass
     maxHeight: React.PropTypes.number
     specials: React.PropTypes.array
     onKeyDown: React.PropTypes.func
+    placeholder: React.PropTypes.string
+    selectionStart: React.PropTypes.number
+    selectionEnd: React.PropTypes.number
 
   getDefaultProps: ->
     minHeight: 120
     maxHeight: 200
     specials: ['@']
+    placeholder: ''
     onKeyDown: ->
 
   getInitialState: ->
@@ -34,6 +38,7 @@ module.exports = React.createClass
 
   componentDidUpdate: ->
     @mirrorStyles()
+    @checkSelectionPositions()
 
   # methods
 
@@ -81,20 +86,20 @@ module.exports = React.createClass
   getCaret: ->
     rect = @preEl.querySelector('.textbox-caret').getBoundingClientRect()
 
-    top: rect.top
-    bottom: rect.bottom
-    left: rect.left
-    right: rect.right
+    top: Math.round rect.top
+    bottom: Math.round rect.bottom
+    left: Math.round rect.left
+    right: Math.round rect.right
 
   getSpecial: ->
     target = @preEl.querySelector('.textbox-special')
     if target?
       rect = target.getBoundingClientRect()
 
-      top: rect.top
-      bottom: rect.bottom
-      left: rect.left
-      right: rect.right
+      top: Math.round rect.top
+      bottom: Math.round rect.bottom
+      left: Math.round rect.left
+      right: Math.round rect.right
     else
       null
 
@@ -103,6 +108,12 @@ module.exports = React.createClass
 
   getTrigger: ->
     pick.getTrigger @boxEl.value[...@boxEl.selectionStart], @props.specials
+
+  checkSelectionPositions: ->
+    if @boxEl.selectionStart isnt @props.selectionStart
+       @boxEl.selectionStart = @props.selectionStart
+    if @boxEl.selectionEnd isnt @props.selectionEnd
+       @boxEl.selectionEnd = @props.selectionEnd
 
   # events
 
@@ -120,6 +131,8 @@ module.exports = React.createClass
       special: specialArea
       query: @getQuery()
       trigger: triggerChar
+      selectionStart: @boxEl.selectionStart
+      selectionEnd: @boxEl.selectionEnd
     if event.target.value.length < 4
       # quickly shrink in height after removing content
       # TODO, need to exact height here
@@ -150,3 +163,4 @@ module.exports = React.createClass
         ref: 'box', value: @props.text, onChange: @onChange
         onScroll: @onScroll, style: {height: @getHeight()}
         onClick: @onClick, onKeyUp: @onKeyUp, onKeyDown: @onKeyDown
+        placeholder: @props.placeholder
