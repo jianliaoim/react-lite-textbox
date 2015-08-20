@@ -79,7 +79,7 @@ module.exports = React.createClass
 
   expandText: ->
     if @preEl?
-      dom.expand @props.text, @boxEl.selectionStart, @props.specials
+      dom.expand @props.text, @props.selectionStart, @props.specials
     else
       dom.expand @props.text, 0, @props.specials
 
