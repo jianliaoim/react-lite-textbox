@@ -38,6 +38,7 @@ module.exports = React.createClass
     @preEl = @refs.pre.getDOMNode()
     @mirrorStyles()
     @throttledUpdate = throttle @onUpdate, 50
+    @throttledScroll = throttle @onScroll, 50
 
   componentDidUpdate: ->
     @throttledUpdate()
@@ -117,16 +118,20 @@ module.exports = React.createClass
   # events
 
   onChange: (event) ->
-    specialArea = @getSpecial()
     triggerChar = @getTrigger()
-    caretArea = @getCaret()
+    if triggerChar?
+      specialArea = @getSpecial()
+      caretArea = @getCaret()
+    else
+      specialArea = {}
+      caretArea = {}
     # for a instant, special can be null with trigger defined
     # return caret position as a temporary fix
     if triggerChar? and (not specialArea?)
       specialArea = caretArea
     @props.onChange
       value: event.target.value
-      caret: @getCaret()
+      caret: caretArea
       special: specialArea
       query: @getQuery()
       trigger: triggerChar
@@ -149,7 +154,8 @@ module.exports = React.createClass
     @onChange event
 
   onScroll: ->
-    @preEl.scrollTop = @boxEl.scrollTop
+    if @preEl.scrollTop isnt @boxEl.scrollTop
+      @preEl.scrollTop = @boxEl.scrollTop
 
   # renderers
 
