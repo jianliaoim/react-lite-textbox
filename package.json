@@ -1,12 +1,13 @@
 {
   "name": "react-lite-textbox",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "description": "Textbox component for Talk by Teambition",
   "main": "lib/textbox.js",
   "dependencies": {
     "classnames": "^1.2.0",
     "react": "^0.13.1",
-    "tail-call": "0.0.1"
+    "tail-call": "0.0.1",
+    "throttleit": "^1.0.0"
   },
   "devDependencies": {
     "cirru-script": "^0.2.3",

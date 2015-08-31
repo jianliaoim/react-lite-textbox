@@ -1,7 +1,9 @@
 
 React = require 'react'
+throttle = require 'throttleit'
 dom = require './dom'
 pick = require './pick'
+properties = require './properties'
 
 div = React.createFactory 'div'
 pre = React.createFactory 'pre'
@@ -35,29 +37,27 @@ module.exports = React.createClass
     @boxEl = @refs.box.getDOMNode()
     @preEl = @refs.pre.getDOMNode()
     @mirrorStyles()
+    @throttledUpdate = throttle @onUpdate, 50
 
   componentDidUpdate: ->
+    @throttledUpdate()
+
+  onUpdate: ->
     @mirrorStyles()
-    @checkSelectionPositions()
+    @checkSelection()
 
   # methods
 
   getBoxStyles: ->
     if @boxEl?
       boxStyles = getComputedStyle @boxEl
-      mirrorStyles = {}
-      for key, value of boxStyles
-        continue if key[0] is '-'
-        continue if key.match /^webkit/
-        continue if (typeof value) is 'function'
-        continue if key.match /^\d+$/
-        mirrorStyles[key] = value
-      mirrorStyles
-    else
-      {}
+      properties.reduce (acc, property) =>
+        acc[property] = boxStyles[property]
+        acc
+      , {}
+    else {}
 
   getHeight: ->
-
     mirrorHeight = @state.contentHeight
     if @state.contentHeight < @props.minHeight
       mirrorHeight = @props.minHeight
@@ -67,7 +67,6 @@ module.exports = React.createClass
     mirrorHeight
 
   mirrorStyles: ->
-
     mirrorHeight = @getHeight()
 
     styles = @getBoxStyles()
@@ -109,7 +108,7 @@ module.exports = React.createClass
   getTrigger: ->
     pick.getTrigger @boxEl.value[...@boxEl.selectionStart], @props.specials
 
-  checkSelectionPositions: ->
+  checkSelection: ->
     if @boxEl.selectionStart isnt @props.selectionStart
        @boxEl.selectionStart = @props.selectionStart
     if @boxEl.selectionEnd isnt @props.selectionEnd
