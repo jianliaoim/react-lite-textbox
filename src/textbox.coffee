@@ -36,15 +36,11 @@ module.exports = React.createClass
   componentDidMount: ->
     @boxEl = @refs.box.getDOMNode()
     @preEl = @refs.pre.getDOMNode()
-    @mirrorStyles()
-    @throttledUpdate = throttle @onUpdate, 50
+    @throttledMirrorStyles = throttle @mirrorStyles, 50
     @throttledScroll = throttle @onScroll, 50
 
   componentDidUpdate: ->
-    @throttledUpdate()
-
-  onUpdate: ->
-    @mirrorStyles()
+    @throttledMirrorStyles()
     @checkSelection()
 
   # methods
