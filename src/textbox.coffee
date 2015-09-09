@@ -9,6 +9,8 @@ div = React.createFactory 'div'
 pre = React.createFactory 'pre'
 textarea = React.createFactory 'textarea'
 
+emptyObject = {}
+
 module.exports = React.createClass
   displayName: 'lite-textbox'
 
@@ -52,7 +54,7 @@ module.exports = React.createClass
         acc[property] = boxStyles[property]
         acc
       , {}
-    else {}
+    else emptyObject
 
   getHeight: ->
     mirrorHeight = @state.contentHeight
@@ -119,8 +121,8 @@ module.exports = React.createClass
       specialArea = @getSpecial()
       caretArea = @getCaret()
     else
-      specialArea = {}
-      caretArea = {}
+      specialArea = emptyObject
+      caretArea = emptyObject
     # for a instant, special can be null with trigger defined
     # return caret position as a temporary fix
     if triggerChar? and (not specialArea?)

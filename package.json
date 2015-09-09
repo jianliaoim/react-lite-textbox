@@ -1,6 +1,6 @@
 {
   "name": "react-lite-textbox",
-  "version": "0.0.5",
+  "version": "0.0.7",
   "description": "Textbox component for Talk by Teambition",
   "main": "lib/textbox.js",
   "dependencies": {
