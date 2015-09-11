@@ -1,5 +1,6 @@
 
-React = require 'react'
+React = require 'react/addons'
+keycode = require 'keycode'
 throttle = require 'throttleit'
 dom = require './dom'
 pick = require './pick'
@@ -13,6 +14,7 @@ emptyObject = {}
 
 module.exports = React.createClass
   displayName: 'lite-textbox'
+  mixins: [React.addons.PureRenderMixin]
 
   propTypes:
     text: React.PropTypes.string.isRequired
@@ -143,7 +145,9 @@ module.exports = React.createClass
       @setState contentHeight: @boxEl.scrollHeight
 
   onKeyUp: (event) ->
-    @onChange event
+    directionKeys = ['up', 'down', 'left', 'right']
+    if keycode(event.keyCode) in directionKeys
+      @onChange event
 
   onKeyDown: (event) ->
     @props.onKeyDown event
