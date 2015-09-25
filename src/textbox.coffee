@@ -1,7 +1,7 @@
 
 React = require 'react/addons'
 keycode = require 'keycode'
-throttle = require 'throttleit'
+debounce = require 'debounce'
 dom = require './dom'
 pick = require './pick'
 properties = require './properties'
@@ -40,22 +40,21 @@ module.exports = React.createClass
   componentDidMount: ->
     @boxEl = @refs.box.getDOMNode()
     @preEl = @refs.pre.getDOMNode()
-    @throttledMirrorStyles = throttle @mirrorStyles, 50
-    @throttledScroll = throttle @onScroll, 50
+    @debouncedMirrorStyles = debounce @mirrorStyles, 50
 
   componentDidUpdate: ->
-    @throttledMirrorStyles()
+    @debouncedMirrorStyles()
     @checkSelection()
 
   # methods
 
-  getBoxStyles: ->
+  readBoxStyles: ->
     if @boxEl?
       boxStyles = getComputedStyle @boxEl
-      properties.reduce (acc, property) =>
-        acc[property] = boxStyles[property]
-        acc
-      , {}
+      result = {}
+      for property in properties
+        result[property] = boxStyles[property]
+      result
     else emptyObject
 
   getHeight: ->
@@ -70,12 +69,13 @@ module.exports = React.createClass
   mirrorStyles: ->
     mirrorHeight = @getHeight()
 
-    styles = @getBoxStyles()
+    styles = @readBoxStyles()
     styles.height = "#{mirrorHeight}px"
     styles.zIndex = -1
     for key, value of styles
       @preEl.style[key] = value
-    @preEl.scrollTop = @boxEl.scrollTop
+    if @preEl.scrollTop isnt @boxEl.scrollTop
+      @preEl.scrollTop = @boxEl.scrollTop
 
   expandText: ->
     if @preEl?

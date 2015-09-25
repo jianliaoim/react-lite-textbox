@@ -22,7 +22,9 @@ getTrigger = recur (text, specials) ->
   else
     endChar = text[text.length-1]
     init = text[...-1]
-    if endChar in specials
+    if endChar is ' '
+      return null
+    else if endChar in specials
       return endChar
     else
       getTrigger init, specials
