@@ -44,7 +44,6 @@ module.exports = React.createClass
 
   componentDidUpdate: ->
     @debouncedMirrorStyles()
-    @checkSelection()
 
   # methods
 
