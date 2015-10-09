@@ -2,7 +2,7 @@
 canvas = document.createElement('canvas')
 ctx = canvas.getContext('2d')
 
-exports.textPosition = (text, limitWidth, style) ->
+exports.textPosition = (text, style, limitWidth) ->
   {lineHeight} = style
   ctx.font = "#{style.fontSize} #{style.fontFamily}"
 
@@ -23,6 +23,7 @@ exports.textPosition = (text, limitWidth, style) ->
         widthAcc = 0
       else
         widthAcc += charWidth
+    index++
 
   # return rect information
   top: lineCount * lineHeight

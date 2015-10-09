@@ -20,9 +20,10 @@ module.exports = React.createClass
     selectionStart: React.PropTypes.number.isRequired
     selectionEnd: React.PropTypes.number.isRequired
     paddingTop: React.PropTypes.number.isRequired
-    paddnggBottom: React.PropTypes.number.isRequired
+    paddingBottom: React.PropTypes.number.isRequired
     paddingLeft: React.PropTypes.number.isRequired
     paddingRight: React.PropTypes.number.isRequired
+    borderWidth: React.PropTypes.number
     minHeight: React.PropTypes.number
     maxHeight: React.PropTypes.number
     specials: React.PropTypes.array
@@ -34,32 +35,24 @@ module.exports = React.createClass
     maxHeight: 200
     specials: ['@']
     placeholder: ''
+    borderWidth: 1
     style:
       fontSize: "14px"
       fontFamily: "Roboto,Helvetica Neue,Hiragino Sans GB,Microsoft Yahei,sans-serif"
-      lineHeight: "30px"
+      lineHeight: 28
     onKeyDown: ->
 
   getInitialState: ->
     contentHeight: 20
     height: 100
-    width: 400
+    scrollTop: 0
 
   componentDidMount: ->
-    @boxEl = @refs.box.getDOMNode()
+    @boxEl = @getDOMNode()
 
   componentDidUpdate: ->
 
   # methods
-
-  getHeight: ->
-    mirrorHeight = @state.contentHeight
-    if @state.contentHeight < @props.minHeight
-      mirrorHeight = @props.minHeight
-    if @state.contentHeight > @props.maxHeight
-      mirrorHeight = @props.maxHeight
-
-    mirrorHeight
 
   getQuery: ->
     pick.getQuery @boxEl.value[...@boxEl.selectionStart], @props.specials
@@ -67,24 +60,70 @@ module.exports = React.createClass
   getTrigger: ->
     pick.getTrigger @boxEl.value[...@boxEl.selectionStart], @props.specials
 
+  getBeforeQuery: ->
+    pick.getBeforeQuery @boxEl.value[...@boxEl.selectionStart], @props.specials
+
   checkSelection: ->
     if @boxEl.selectionStart isnt @props.selectionStart
        @boxEl.selectionStart = @props.selectionStart
     if @boxEl.selectionEnd isnt @props.selectionEnd
        @boxEl.selectionEnd = @props.selectionEnd
 
+  getCaretPosition: ->
+    # reading width from side effect
+    wholeText = @boxEl.value
+    selectionStart = @boxEl.selectionStart
+    widthLimit = @boxEl.clientWidth - @props.paddingLeft - @props.paddingRight
+    position = measure.textPosition wholeText[...selectionStart], @props.style, widthLimit
+
+    boxPosition = @boxEl.getBoundingClientRect()
+
+    top: boxPosition.top + @props.paddingTop + @props.borderWidth + position.top - @boxEl.scrollTop
+    bottom: boxPosition.top + @props.paddingTop + @props.borderWidth + position.bottom - @boxEl.scrollTop
+    left: boxPosition.left + @props.paddingLeft + @props.borderWidth + position.left
+    right: boxPosition.left + @props.paddingLeft + @props.borderWidth + position.left
+
+  getSpecialPosition: ->
+    text = @getBeforeQuery()
+    widthLimit = @boxEl.clientWidth - @props.paddingLeft - @props.paddingRight
+    position = measure.textPosition text, @props.style, widthLimit
+
+    boxPosition = @boxEl.getBoundingClientRect()
+
+    top: boxPosition.top + @props.paddingTop + @props.borderWidth + position.top - @boxEl.scrollTop
+    bottom: boxPosition.top + @props.paddingTop + @props.borderWidth + position.bottom - @boxEl.scrollTop
+    left: boxPosition.left + @props.paddingLeft + @props.borderWidth + position.left
+    right: boxPosition.left + @props.paddingLeft + @props.borderWidth + position.left
+
+  getTextHeight: ->
+    widthLimit = @boxEl.clientWidth - @props.paddingLeft - @props.paddingRight
+    position = measure.textPosition @boxEl.value, @props.style, widthLimit
+    position.bottom
+
+  getHeight: ->
+    textHeight = @getTextHeight()
+    mirrorHeight = @state.contentHeight
+    switch
+      when textHeight < @props.minHeight
+        @props.minHeight
+      when textHeight > @props.maxHeight
+        @props.maxHeight
+      else
+        textHeight
+
   # events
 
   onChange: (event) ->
-    triggerChar = @getTrigger()
+
     @props.onChange
       value: event.target.value
-      caret: 'TODO'
-      special: 'TODO'
+      caret: @getCaretPosition()
+      special: @getSpecialPosition()
       query: @getQuery()
-      trigger: triggerChar
+      trigger: @getTrigger()
       selectionStart: @boxEl.selectionStart
       selectionEnd: @boxEl.selectionEnd
+      textHeight: @getTextHeight()
     if event.target.value.length < 4
       # quickly shrink in height after removing content
       # TODO, need to exact height here
@@ -103,16 +142,15 @@ module.exports = React.createClass
   onClick: (event) ->
     @onChange event
 
-  onScroll: ->
-    if @preEl.scrollTop isnt @boxEl.scrollTop
-      @preEl.scrollTop = @boxEl.scrollTop
+  onScroll: (event) ->
+    @onChange
 
   # renderers
 
   render: ->
     textarea
       className: 'lite-textbox',
-      ref: 'box', value: @props.text, onChange: @onChange
+      value: @props.text, onChange: @onChange
       onScroll: @onScroll, style: {height: @getHeight()}
       onClick: @onClick, onKeyUp: @onKeyUp, onKeyDown: @onKeyDown
       placeholder: @props.placeholder
