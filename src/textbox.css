@@ -1,13 +1,6 @@
 
 .lite-textbox {
   position: relative;
-}
-
-.lite-textbox pre {
-  position: absolute !important;
-  z-index: -1 !important;
-}
-.lite-textbox textarea {
   width: 100%;
   background: transparent;
 }
