@@ -124,12 +124,12 @@ module.exports = React.createClass
     @props.onChange
       value: event.target.value
       caret: @getCaretPosition()
-      # special: @getSpecialPosition()
+      special: @getSpecialPosition()
       query: @getQuery()
       trigger: @getTrigger()
       selectionStart: @boxEl.selectionStart
       selectionEnd: @boxEl.selectionEnd
-      # textHeight: @getTextHeight()
+      textHeight: @getTextHeight()
     if event.target.value.length < 4
       # quickly shrink in height after removing content
       # TODO, need to exact height here
@@ -149,7 +149,7 @@ module.exports = React.createClass
     @onChange event
 
   onScroll: (event) ->
-    @onChange
+    @onChange event
 
   # renderers
 

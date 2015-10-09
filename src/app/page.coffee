@@ -26,7 +26,7 @@ module.exports = React.createClass
       text: info.value, overview: info
       start: info.selectionStart, end: info.selectionEnd
       caret: info.caret
-      # special: info.special
+      special: info.special
 
   onKeyDown: (event) ->
     if keycode(event.keyCode) is 'enter'

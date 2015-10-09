@@ -51,15 +51,22 @@ exports.textPosition = (text, cursor, style, limitWidth) ->
   while index < wordList.length
     word = wordList[index]
     indexEnd = (index + 1) is wordList.length
+    overflowed = (widthAcc + wordWidth) > limitWidth
+    overflowedWithAfter = (widthAcc + wordWidth + pieceAfterWidth) > limitWidth
+
+    isAsciiBefore = (word[0]? and word[0].match(/[\u0000-\u007F]/))
+    isAsciiAfter = (pieceAfter[0]? and pieceAfter[0].match(/[\u0000-\u007F]/))
+    isAsciiJoined = isAsciiBefore and isAsciiAfter
+
     if word is '\n'
       lineCount += 1
       widthAcc = 0
     else
       wordWidth = ctx.measureText(word).width
-      if (widthAcc + wordWidth) > limitWidth
+      if overflowed
         lineCount += 1
         widthAcc = wordWidth
-      else if indexEnd and (not (word in [' ', '\n'])) and (widthAcc + wordWidth + pieceAfterWidth) > limitWidth
+      else if indexEnd and (not (word in [' ', '\n'])) and overflowedWithAfter and isAsciiJoined
         lineCount += 1
         widthAcc = wordWidth
       else

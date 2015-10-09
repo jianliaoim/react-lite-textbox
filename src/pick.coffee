@@ -3,12 +3,12 @@
 
 getQuery = recur (buffer, text, specials) ->
   if text.length is 0
-    return null
+    null
   else
     endChar = text[text.length-1]
     init = text[...-1]
     if endChar in specials
-      return buffer
+      buffer
     else
       buffer = endChar + buffer
       getQuery buffer, init, specials
@@ -16,31 +16,26 @@ getQuery = recur (buffer, text, specials) ->
 exports.getQuery = (text, specials) ->
   getQuery '', text, specials
 
-getTrigger = recur (text, specials) ->
+exports.getTrigger = getTrigger = recur (text, specials) ->
   if text.length is 0
-    return null
+    null
   else
     endChar = text[text.length-1]
     init = text[...-1]
     if endChar is ' '
-      return null
+      null
     else if endChar in specials
-      return endChar
+      endChar
     else
       getTrigger init, specials
 
-exports.getTrigger = (text, specials) ->
-  getTrigger text, specials
-
-getBeforeQuery = recur (text, specials) ->
+exports.getBeforeQuery = getBeforeQuery = recur (text, specials) ->
   if text.length is 0
-    return ''
+    ''
   else
     endChar = text[text.length-1]
     init = text[...-1]
     if endChar in specials
-      return text
-    else getBeforeQuery init, specials
-
-exports.getBeforeQuery = (text, specials) ->
-  getBeforeQuery text, specials
+      text
+    else
+      getBeforeQuery init, specials
