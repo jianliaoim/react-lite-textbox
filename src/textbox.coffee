@@ -74,7 +74,7 @@ module.exports = React.createClass
     wholeText = @boxEl.value
     selectionStart = @boxEl.selectionStart
     widthLimit = @boxEl.clientWidth - @props.paddingLeft - @props.paddingRight
-    position = measure.textPosition wholeText[...selectionStart], @props.style, widthLimit
+    position = measure.textPosition wholeText, selectionStart, @props.style, widthLimit
 
     boxPosition = @boxEl.getBoundingClientRect()
 
@@ -86,7 +86,7 @@ module.exports = React.createClass
   getSpecialPosition: ->
     text = @getBeforeQuery()
     widthLimit = @boxEl.clientWidth - @props.paddingLeft - @props.paddingRight
-    position = measure.textPosition text, @props.style, widthLimit
+    position = measure.textPosition @boxEl.value, text.length, @props.style, widthLimit
 
     boxPosition = @boxEl.getBoundingClientRect()
 
@@ -103,7 +103,7 @@ module.exports = React.createClass
       clientWidth = 400
       text = @props.text
     widthLimit = clientWidth - @props.paddingLeft - @props.paddingRight
-    position = measure.textPosition text, @props.style, widthLimit
+    position = measure.textPosition text, text.length, @props.style, widthLimit
     position.bottom
 
   getHeight: ->
@@ -124,12 +124,12 @@ module.exports = React.createClass
     @props.onChange
       value: event.target.value
       caret: @getCaretPosition()
-      special: @getSpecialPosition()
+      # special: @getSpecialPosition()
       query: @getQuery()
       trigger: @getTrigger()
       selectionStart: @boxEl.selectionStart
       selectionEnd: @boxEl.selectionEnd
-      textHeight: @getTextHeight()
+      # textHeight: @getTextHeight()
     if event.target.value.length < 4
       # quickly shrink in height after removing content
       # TODO, need to exact height here
