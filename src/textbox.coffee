@@ -96,8 +96,14 @@ module.exports = React.createClass
     right: boxPosition.left + @props.paddingLeft + @props.borderWidth + position.left
 
   getTextHeight: ->
-    widthLimit = @boxEl.clientWidth - @props.paddingLeft - @props.paddingRight
-    position = measure.textPosition @boxEl.value, @props.style, widthLimit
+    if @boxEl?
+      clientWidth = @boxEl.clientWidth
+      text = @boxEl.value
+    else
+      clientWidth = 400
+      text = @props.text
+    widthLimit = clientWidth - @props.paddingLeft - @props.paddingRight
+    position = measure.textPosition text, @props.style, widthLimit
     position.bottom
 
   getHeight: ->
