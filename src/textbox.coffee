@@ -65,10 +65,18 @@ module.exports = React.createClass
     pick.getBeforeQuery @boxEl.value[...@boxEl.selectionStart], @props.specials
 
   checkSelection: ->
-    if @boxEl.selectionStart isnt @props.selectionStart
-       @boxEl.selectionStart = @props.selectionStart
-    if @boxEl.selectionEnd isnt @props.selectionEnd
-       @boxEl.selectionEnd = @props.selectionEnd
+    isSafari = /^((?!chrome).)*safari/i.test(navigator.userAgent)
+    if isSafari
+      # OS X Safari IME give different selectionStart during input events
+      # be careful not to trigger Safari's bug
+      if @boxEl.selectionEnd isnt @props.selectionEnd
+        @boxEl.selectionStart = @props.selectionStart
+        @boxEl.selectionEnd = @props.selectionEnd
+    else
+      if @boxEl.selectionStart isnt @props.selectionStart
+        @boxEl.selectionStart = @props.selectionStart
+      if @boxEl.selectionEnd isnt @props.selectionEnd
+        @boxEl.selectionEnd = @props.selectionEnd
 
   getCaretPosition: ->
     # reading width from side effect
