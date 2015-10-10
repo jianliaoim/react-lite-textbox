@@ -34,7 +34,7 @@ exports.textPosition = (text, cursor, style, limitWidth) ->
   textAfter = text[cursor..]
   pieceAfter = textAfter.split(' ')[0] or ''
 
-  if text.length > 400
+  if text.length > 800
     return {top: 0, bottom: style.lineHeight, left: 0, right: 0}
 
   {lineHeight} = style
@@ -51,10 +51,8 @@ exports.textPosition = (text, cursor, style, limitWidth) ->
   while index < wordList.length
     word = wordList[index]
     indexEnd = (index + 1) is wordList.length
-    overflowed = (widthAcc + wordWidth) > limitWidth
-    overflowedWithAfter = (widthAcc + wordWidth + pieceAfterWidth) > limitWidth
 
-    isAsciiBefore = (word[0]? and word[0].match(/[\u0000-\u007F]/)) and (not word[0] in [' ', '\n'])
+    isAsciiBefore = (word[0]? and word[0].match(/[\u0000-\u007F]/))? and (not word[0] in [' ', '\n'])
     isAsciiAfter = (pieceAfter[0]? and pieceAfter[0].match(/[\u0000-\u007F]/)) and (not word[0] in [' ', '\n'])
     isAsciiJoined = isAsciiBefore and isAsciiAfter
 
@@ -63,6 +61,9 @@ exports.textPosition = (text, cursor, style, limitWidth) ->
       widthAcc = 0
     else
       wordWidth = ctx.measureText(word).width
+      overflowed = (widthAcc + wordWidth) > limitWidth
+      overflowedWithAfter = (widthAcc + wordWidth + pieceAfterWidth) > limitWidth
+
       if overflowed
         lineCount += 1
         widthAcc = wordWidth

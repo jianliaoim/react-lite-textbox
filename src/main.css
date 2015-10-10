@@ -1,7 +1,8 @@
 
-@import url(textbox.css);
-
 body {
   padding: 100px;
 }
 
+textarea.lite-textbox {
+  width: 200px;
+}

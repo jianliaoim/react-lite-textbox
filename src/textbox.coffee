@@ -31,8 +31,8 @@ module.exports = React.createClass
     placeholder: React.PropTypes.string
 
   getDefaultProps: ->
-    minHeight: 120
-    maxHeight: 200
+    minHeight: 100
+    maxHeight: 400
     specials: ['@']
     placeholder: ''
     borderWidth: 1
@@ -44,13 +44,14 @@ module.exports = React.createClass
 
   getInitialState: ->
     contentHeight: 20
-    height: 100
+    height: @props.minHeight
     scrollTop: 0
 
   componentDidMount: ->
     @boxEl = @getDOMNode()
 
   componentDidUpdate: ->
+    @checkSelection()
 
   # methods
 

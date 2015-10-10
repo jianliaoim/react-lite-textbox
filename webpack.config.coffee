@@ -19,7 +19,7 @@ module.exports =
   resolve: extensions: ['.js', '.coffee', '']
   module:
     loaders: [
-      {test: /\.coffee$/, loader: 'coffee', ignore: /node_modules/}
+      {test: /\.coffee$/, loader: 'react-hot!coffee', ignore: /node_modules/}
       {test: /\.css$/, loader: 'style!css'}
       {test: /\.less$/, loader: 'style!css!less'}
       {test: /\.woff((\?|\#)[\?\#\w\d_-]+)?$/, loader: "url", query: {limit: 100, minetype: 'application/font-woff', name: fontName}}
