@@ -54,8 +54,8 @@ exports.textPosition = (text, cursor, style, limitWidth) ->
     overflowed = (widthAcc + wordWidth) > limitWidth
     overflowedWithAfter = (widthAcc + wordWidth + pieceAfterWidth) > limitWidth
 
-    isAsciiBefore = (word[0]? and word[0].match(/[\u0000-\u007F]/))
-    isAsciiAfter = (pieceAfter[0]? and pieceAfter[0].match(/[\u0000-\u007F]/))
+    isAsciiBefore = (word[0]? and word[0].match(/[\u0000-\u007F]/)) and (not word[0] in [' ', '\n'])
+    isAsciiAfter = (pieceAfter[0]? and pieceAfter[0].match(/[\u0000-\u007F]/)) and (not word[0] in [' ', '\n'])
     isAsciiJoined = isAsciiBefore and isAsciiAfter
 
     if word is '\n'
