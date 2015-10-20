@@ -12,6 +12,7 @@ module.exports = React.createClass
 
   getInitialState: ->
     text: testCases.longLine.text
+    time: new Date
     overview: ''
     start: testCases.longLine.start
     end: testCases.longLine.start
@@ -21,6 +22,12 @@ module.exports = React.createClass
     special:
       top: 0
       left: 0
+
+  componentDidMount: ->
+    # test a bug, caused by unexpected render event
+    setInterval =>
+      @setState time: new Date
+    , 1000
 
   focusToText: ->
     root = @getDOMNode()

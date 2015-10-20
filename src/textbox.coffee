@@ -1,7 +1,6 @@
 
 React = require 'react/addons'
 keycode = require 'keycode'
-debounce = require 'debounce'
 pick = require './pick'
 measure = require './measure'
 
@@ -147,9 +146,7 @@ module.exports = React.createClass
       @setState contentHeight: @boxEl.scrollHeight
 
   onKeyUp: (event) ->
-    directionKeys = ['up', 'down', 'left', 'right']
-    if keycode(event.keyCode) in directionKeys
-      @onChange event
+    @onChange event
 
   onKeyDown: (event) ->
     @props.onKeyDown event
