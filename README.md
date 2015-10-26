@@ -38,6 +38,28 @@ Textbox
 
 Read `src/main.coffee` for details.
 
+### API to detect caret position in pixels
+
+In order to detect precise pixel position of caret, this project utilized [`measureText` API][api] to do manual layout based on Canvas APIs. The results is an object of pixels.
+
+[api]: https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/measureText
+
+```coffee
+measure = require 'react-lite-textbox/lib/measure'
+measure.textPosition(text, cursor, style, limitWidth)
+# => {top: 40, bottom: 50, left: 10, right: 10}
+```
+
+
+* `text` not only the text before the caret, also about one line of text more to help with layouts.
+* `cursor` the position where the caret is, an integer.
+* `style` property is consisted of `{fontSize: 14, lineHeight: 20, fontFamily: 'Optima'}` which Canvas may need in measuring.
+* `limitWidth` width of container, an integer.
+
+Notice the manual layout algorithm has two flaws dealing with punctuations in CJK languages and words that overflows the container. In simple cases the result can be as precise as `Element.getBoundingClientRect` which gets position with a selection object.
+
+Send me PR if you got ideas to improve the results.
+
 ### Develop
 
 https://github.com/teambition/coffee-webpack-starter
