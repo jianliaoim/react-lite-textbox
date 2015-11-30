@@ -28,19 +28,32 @@ splitText = (text) ->
     result.push buffer
   result
 
+# use caching to improve performace
+widthCaches = {}
+measureTextWidth = (text, style) ->
+  cachePath = "#{style}#{text}"
+  maybeWidth = widthCaches[cachePath]
+  if maybeWidth?
+    return maybeWidth
+  else
+    if ctx.font isnt style
+      ctx.font = style
+    theWidth = ctx.measureText(text).width
+    widthCaches[cachePath] = theWidth
+    return theWidth
+
 exports.textPosition = (text, cursor, style, limitWidth) ->
   # for performace reasons, return 0 when text too long
   textBefore = text[...cursor]
   textAfter = text[cursor..]
   pieceAfter = textAfter.split(' ')[0] or ''
 
-  if text.length > 800
+  if text.length > 3000
     return {top: 0, bottom: style.lineHeight, left: 0, right: 0}
 
   {lineHeight} = style
-  ctx.font = "#{style.fontSize} #{style.fontFamily}"
-  pieceAfterWidth = ctx.measureText(pieceAfter).width
-  whitespaceWidth = ctx.measureText(' ').width
+  styleString = "#{style.fontSize} #{style.fontFamily}"
+  pieceAfterWidth = measureTextWidth pieceAfter, styleString
 
   # layout text
 
@@ -60,7 +73,7 @@ exports.textPosition = (text, cursor, style, limitWidth) ->
       lineCount += 1
       widthAcc = 0
     else
-      wordWidth = ctx.measureText(word).width
+      wordWidth = measureTextWidth word, styleString
       overflowed = (widthAcc + wordWidth) > limitWidth
       overflowedWithAfter = (widthAcc + wordWidth + pieceAfterWidth) > limitWidth
 
