@@ -29,9 +29,20 @@ splitText = (text) ->
   result
 
 # use caching to improve performace
+stylesDict = []
 widthCaches = {}
-measureTextWidth = (text, style) ->
-  cachePath = "#{style}#{text}"
+measureCharWidth = (text, style) ->
+  # use dictionary since style is very long, which costs memory
+  styleId = stylesDict.indexOf style
+  if styleId < 0 # not in record
+    styleId = stylesDict.length
+    stylesDict.push style
+
+  # regard any Chinese character as '字' to reduce memory
+  if text.match(/^[\u4E00-\u9FA5\uF900-\uFA2D]$/)?
+    text = '字'
+
+  cachePath = "#{styleId}:#{text}"
   maybeWidth = widthCaches[cachePath]
   if maybeWidth?
     return maybeWidth
@@ -41,6 +52,12 @@ measureTextWidth = (text, style) ->
     theWidth = ctx.measureText(text).width
     widthCaches[cachePath] = theWidth
     return theWidth
+
+measureTextWidth = (text, style) ->
+  width = 0
+  for char in text
+    width = width + (measureCharWidth char, style)
+  width
 
 exports.textPosition = (text, cursor, style, limitWidth) ->
   # for performace reasons, return 0 when text too long
