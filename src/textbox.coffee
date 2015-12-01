@@ -115,8 +115,7 @@ module.exports = React.createClass
     position.bottom
 
   getHeight: ->
-    textHeight = @getTextHeight()
-    mirrorHeight = @state.contentHeight
+    textHeight = @getTextHeight() + @props.paddingTop + @props.paddingBottom
     switch
       when textHeight < @props.minHeight
         @props.minHeight
