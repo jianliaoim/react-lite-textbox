@@ -53,6 +53,11 @@ measureCharWidth = (text, style) ->
     widthCaches[cachePath] = theWidth
     return theWidth
 
+# very tricky, as fonts loaded, cache is outdated
+# http://stackoverflow.com/a/32292880/883571
+document.fonts?.ready.then ->
+  widthCaches = {}
+
 measureTextWidth = (text, style) ->
   width = 0
   for char in text
