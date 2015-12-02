@@ -28,19 +28,54 @@ splitText = (text) ->
     result.push buffer
   result
 
+# use caching to improve performace
+stylesDict = []
+widthCaches = {}
+measureCharWidth = (text, style) ->
+  # use dictionary since style is very long, which costs memory
+  styleId = stylesDict.indexOf style
+  if styleId < 0 # not in record
+    styleId = stylesDict.length
+    stylesDict.push style
+
+  # regard any Chinese character as '字' to reduce memory
+  if text.match(/^[\u4E00-\u9FA5\uF900-\uFA2D]$/)?
+    text = '字'
+
+  cachePath = "#{styleId}:#{text}"
+  maybeWidth = widthCaches[cachePath]
+  if maybeWidth?
+    return maybeWidth
+  else
+    if ctx.font isnt style
+      ctx.font = style
+    theWidth = ctx.measureText(text).width
+    widthCaches[cachePath] = theWidth
+    return theWidth
+
+# very tricky, as fonts loaded, cache is outdated
+# http://stackoverflow.com/a/32292880/883571
+document.fonts?.ready.then ->
+  widthCaches = {}
+
+measureTextWidth = (text, style) ->
+  width = 0
+  for char in text
+    width = width + (measureCharWidth char, style)
+  width
+
 exports.textPosition = (text, cursor, style, limitWidth) ->
   # for performace reasons, return 0 when text too long
   textBefore = text[...cursor]
   textAfter = text[cursor..]
   pieceAfter = textAfter.split(' ')[0] or ''
 
-  if text.length > 800
+  if text.length > 3000
     return {top: 0, bottom: style.lineHeight, left: 0, right: 0}
 
   {lineHeight} = style
-  ctx.font = "#{style.fontSize} #{style.fontFamily}"
-  pieceAfterWidth = ctx.measureText(pieceAfter).width
-  whitespaceWidth = ctx.measureText(' ').width
+  styleString = "#{style.fontSize} #{style.fontFamily}"
+  pieceAfterWidth = measureTextWidth pieceAfter, styleString
 
   # layout text
 
@@ -60,7 +95,7 @@ exports.textPosition = (text, cursor, style, limitWidth) ->
       lineCount += 1
       widthAcc = 0
     else
-      wordWidth = ctx.measureText(word).width
+      wordWidth = measureTextWidth word, styleString
       overflowed = (widthAcc + wordWidth) > limitWidth
       overflowedWithAfter = (widthAcc + wordWidth + pieceAfterWidth) > limitWidth
 
