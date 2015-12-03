@@ -1,6 +1,7 @@
 
-canvas = document.createElement('canvas')
-ctx = canvas.getContext('2d')
+if typeof window isnt 'undefined'
+  canvas = document.createElement('canvas')
+  ctx = canvas.getContext('2d')
 
 splitText = (text) ->
   result = []
@@ -46,6 +47,8 @@ measureCharWidth = (text, style) ->
   maybeWidth = widthCaches[cachePath]
   if maybeWidth?
     return maybeWidth
+  else if typeof window is 'undefined'
+    return 0 # can not calculate
   else
     if ctx.font isnt style
       ctx.font = style
@@ -55,7 +58,7 @@ measureCharWidth = (text, style) ->
 
 # very tricky, as fonts loaded, cache is outdated
 # http://stackoverflow.com/a/32292880/883571
-document.fonts?.ready.then ->
+document?.fonts?.ready.then ->
   widthCaches = {}
 
 measureTextWidth = (text, style) ->
