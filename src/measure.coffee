@@ -58,8 +58,11 @@ measureCharWidth = (text, style) ->
 
 # very tricky, as fonts loaded, cache is outdated
 # http://stackoverflow.com/a/32292880/883571
-document?.fonts?.ready.then ->
-  widthCaches = {}
+# also make sure it does break in Gulp
+# and .ready is a promise, has compatibility issues
+if (typeof window isnt 'undefined') and document.fonts?
+  document.fonts.ready?.then? ->
+    widthCaches = {}
 
 measureTextWidth = (text, style) ->
   width = 0
