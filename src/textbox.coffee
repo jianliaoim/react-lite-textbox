@@ -25,6 +25,7 @@ module.exports = React.createClass
     borderWidth: React.PropTypes.number
     minHeight: React.PropTypes.number
     maxHeight: React.PropTypes.number
+    width: React.PropTypes.number
     specials: React.PropTypes.array
     onKeyDown: React.PropTypes.func
     placeholder: React.PropTypes.string
@@ -104,12 +105,13 @@ module.exports = React.createClass
     right: boxPosition.left + @props.paddingLeft + @props.borderWidth + position.left
 
   getTextHeight: ->
-    if @boxEl?
-      clientWidth = @boxEl.clientWidth
-      text = @boxEl.value
-    else
-      clientWidth = 400
-      text = @props.text
+    text = switch
+      when @boxEl? then @boxEl.value
+      else @props.text
+    clientWidth = switch
+      when @props.width? then @props.width
+      when @boxEl? then @boxEl.clientWidth
+      else 400
     widthLimit = clientWidth - @props.paddingLeft - @props.paddingRight
     position = measure.textPosition text, text.length, @props.style, widthLimit
     position.bottom
