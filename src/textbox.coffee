@@ -1,8 +1,9 @@
 
-React = require 'react/addons'
+React = require 'react'
 keycode = require 'keycode'
 pick = require './pick'
 measure = require './measure'
+PureRenderMixin = require 'react-addons-pure-render-mixin'
 
 div = React.createFactory 'div'
 textarea = React.createFactory 'textarea'
@@ -11,7 +12,7 @@ emptyObject = {}
 
 module.exports = React.createClass
   displayName: 'lite-textbox'
-  mixins: [React.addons.PureRenderMixin]
+  mixins: [PureRenderMixin]
 
   propTypes:
     text: React.PropTypes.string.isRequired
@@ -48,7 +49,7 @@ module.exports = React.createClass
     scrollTop: 0
 
   componentDidMount: ->
-    @boxEl = @getDOMNode()
+    @boxEl = @refs.root
 
   componentDidUpdate: ->
     @checkSelection()
@@ -162,6 +163,7 @@ module.exports = React.createClass
 
   render: ->
     textarea
+      ref: 'root'
       className: 'lite-textbox',
       value: @props.text, onChange: @onChange
       onScroll: @onScroll, style: {height: @getHeight()}

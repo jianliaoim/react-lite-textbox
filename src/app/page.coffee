@@ -30,7 +30,7 @@ module.exports = React.createClass
     , 1000
 
   focusToText: ->
-    root = @getDOMNode()
+    root = @refs.root
     target = root.querySelector('.lite-textbox')
     event = new Event 'input', bubbles: true
     target.focus()
@@ -63,7 +63,7 @@ module.exports = React.createClass
 
   render: ->
 
-    div className: 'app-page',
+    div ref: 'root', className: 'app-page',
       Textbox
         text: @state.text, onChange: @onChange, specials: ['@', ':']
         placeholder: 'Write here...'
